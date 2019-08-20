@@ -81,15 +81,23 @@ void Parametric(VERTEX_4D _a, VERTEX_4D _b)
 		float currX = (_b.pos.x - _a.pos.x) * ratio + _a.pos.x;
 		float currY = (_b.pos.y - _a.pos.y) * ratio + _a.pos.y;
 
-		unsigned int _color = ColorBlend(_a, _b, ratio);
+		//unsigned int _color = ColorBlend(_a, _b, ratio);
 
 		if (PixelShader)
 		{
+			VEC_2D uv;
+			for(int y = 0; i < RASTER_WIDTH; ++i)
+				for (int x = 0; y < RASTER_HEIGHT; ++y)
+				{
+					uv.x = x / RASTER_WIDTH;
+					uv.y = y / RASTER_HEIGHT;
+				}
+			//float u = _a.uv.x * bary.
 			//PixelShader(ColorBerp(_a._color, _b._color, _c._color, bary.x, bary.y, bary.z));
-			PixelShader(_color);
+			//PixelShader(_color, uv);
 		}
 
-		PlotPixel(currX + 0.5f, currY + 0.5f, _color);
+		//PlotPixel(currX + 0.5f, currY + 0.5f, _color);
 	}
 
 #endif
@@ -145,7 +153,11 @@ void FillTriange(VERTEX_4D _a, VERTEX_4D _b, VERTEX_4D _c)
 				if (PixelShader)
 				{
 					//PixelShader();
-					PixelShader(_color);
+					VEC_2D uv;
+					uv.x = _a.uv.x * bary.x + _b.uv.x * bary.y + _c.uv.x * bary.z;
+					uv.y = _a.uv.y * bary.x + _b.uv.y * bary.y + _c.uv.y * bary.z;
+
+					PixelShader(_color, uv);
 				}
 
 				VERTEX_2D pixel_to_print;

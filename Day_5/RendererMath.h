@@ -39,6 +39,8 @@ struct VERTEX_4D
 {
 	VEC_4D pos;
 	unsigned int _color = 0xFFFFFFFF;
+	VEC_2D uv;
+
 };
 
 struct MATRIX_3D
@@ -101,6 +103,11 @@ float Radians_To_Degrees(float Rad)
 	return Rad * 180.0f / PI;
 }
 
+unsigned int Coordinates(unsigned int x, unsigned int y, unsigned int width)
+{
+	return (y * width) + x;
+}
+
 float ImplicitLineEquation(VEC_4D _a, VEC_4D _b, VEC_4D _p)
 {
 	//(y1-y2)px + (x2-x1) + x1y2 - y1x2
@@ -135,17 +142,17 @@ VEC_3D ComputeBarycentric(VEC_4D _a, VEC_4D _b, VEC_4D _c, VEC_4D _p)
 //	return { (subA / maxA), (subB / maxB), (subC / maxC) };
 //}
 
-unsigned int ColorBlend(VERTEX_4D a, VERTEX_4D b, float ratio)
+unsigned int ColorBlend(unsigned int a, unsigned int b, float ratio)
 {
-	int aA = (a._color & 0xFF000000) >> 24;
-	int aR = (a._color & 0x00FF0000) >> 16;
-	int aG = (a._color & 0x0000FF00) >> 8;
-	int aB = (a._color & 0x000000FF);
+	int aA = (a & 0xFF000000) >> 24;
+	int aR = (a & 0x00FF0000) >> 16;
+	int aG = (a & 0x0000FF00) >> 8;
+	int aB = (a & 0x000000FF);
 
-	int bA = (b._color & 0xFF000000) >> 24;
-	int bR = (b._color & 0x00FF0000) >> 16;
-	int bG = (b._color & 0x0000FF00) >> 8;
-	int bB = (b._color & 0x000000FF);
+	int bA = (b & 0xFF000000) >> 24;
+	int bR = (b & 0x00FF0000) >> 16;
+	int bG = (b & 0x0000FF00) >> 8;
+	int bB = (b & 0x000000FF);
 
 	int alpha = ((float)(bA - aA) * ratio) + aA;
 	int red = ((float)(bR - aR) * ratio) + aR;
@@ -216,7 +223,7 @@ MATRIX_4D Matrix_Create_Translation_4D(VEC_4D _v)
 
 VERTEX_4D Vertex_Matrix_Multipication_4D(VERTEX_4D _v, MATRIX_4D _m)
 {
-	VERTEX_4D temp;
+	VERTEX_4D temp = _v;
 
 	temp._color = _v._color;
 
