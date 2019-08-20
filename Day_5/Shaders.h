@@ -9,6 +9,8 @@ MATRIX_4D SV_Perspective = Matrix_Identity_4D();
 
 unsigned int SP_Color = 0x00000000;
 
+float SV_Scale = 0.5f;
+
 //Vertex Shader
 void(*VertexShader)(VERTEX_4D&) = nullptr;
 
@@ -25,6 +27,19 @@ void VS_World(VERTEX_4D& _v)
 	_v.pos.x /= _v.pos.w;
 	_v.pos.y /= _v.pos.w;
 	_v.pos.z /= _v.pos.w;
+}
+
+void VS_Shrink(VERTEX_4D& _modify)
+{
+	_modify.pos.x *= SV_Scale;
+	_modify.pos.y *= SV_Scale;
+	_modify.pos.z *= SV_Scale;
+
+}
+
+void VS_MoveLeft(VERTEX_4D& _modify)
+{
+	_modify.pos.x -= 0.1f;
 }
 
 // PS_Shaders
