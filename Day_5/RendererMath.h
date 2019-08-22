@@ -142,6 +142,16 @@ VEC_3D ComputeBarycentric(VEC_4D _a, VEC_4D _b, VEC_4D _c, VEC_4D _p)
 //	return { (subA / maxA), (subB / maxB), (subC / maxC) };
 //}
 
+unsigned int ColorShift(unsigned int color)
+{
+	unsigned int B = (color & 0xFF000000) >> 24;
+	unsigned int G = (color & 0x00FF0000) >> 16;
+	unsigned int R = (color & 0x0000FF00) >> 8;
+	unsigned int A = (color & 0x000000FF);
+
+	return (A << 24) | (R << 16) | (G << 8) | (B);
+}
+
 unsigned int ColorBlend(unsigned int a, unsigned int b, float ratio)
 {
 	int aA = (a & 0xFF000000) >> 24;

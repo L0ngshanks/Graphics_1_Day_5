@@ -49,16 +49,49 @@ int main()
 		for(int y = 0; y < RASTER_HEIGHT; ++y)
 			for (int x = 0; x < RASTER_WIDTH; ++x)
 			{
-				unsigned int _1_color = _1_Chainsaw_TGA_pixels[Coordinates(x, y, RASTER_WIDTH)];
-				unsigned int _3_color = _3_Human_TGA_pixels[Coordinates(x, y, RASTER_HEIGHT)];
+				VEC_2D uv = { (float)x / RASTER_WIDTH, (float)y / RASTER_HEIGHT };
 
-				float _1_Blue_Ratio = ((_1_color & 0xFF000000) >> 24) / 255.0f;
-				float _3_Blue_Ratio = ((_3_color & 0xFF000000) >> 24) / 255.0f;
+				float texel_x = uv.x * _1_cave_brownsmall_width;
+				float texel_y = uv.y * _1_cave_brownsmall_height;
 
-				if (_1_Blue_Ratio > _3_Blue_Ratio)
-					PlotPixel(x, y, ColorBlend(0x00000000, 0xFFE14A56, _3_Blue_Ratio));
-				else
-					PlotPixel(x, y, ColorBlend(0x00000000, 0xFF7A09EE, _1_Blue_Ratio));
+				unsigned int index = Coordinates(texel_x, texel_y, _1_cave_brownsmall_width);
+
+				unsigned int _upper_blend;
+				unsigned int _lower_blend;
+
+				unsigned int _1_color = _1_cave_brownsmall_pixels[index];
+				float x_ratio = texel_x -(int)texel_x;
+				float y_ratio = texel_y - (int)texel_y;
+				
+				if (texel_x < _1_cave_brownsmall_width)
+				{
+					unsigned int _upper_color_1 = _1_cave_brownsmall_pixels[Coordinates(texel_x, texel_y, _1_cave_brownsmall_width)];
+					unsigned int _upper_color_2 = _1_cave_brownsmall_pixels[Coordinates(texel_x + 1, texel_y, _1_cave_brownsmall_width)];
+					_upper_blend = ColorBlend(_upper_color_1, _upper_color_2, x_ratio);
+				}
+
+				if (texel_y < _1_cave_brownsmall_height)
+				{
+					unsigned int _lower_color_1 = _1_cave_brownsmall_pixels[Coordinates(texel_x + _1_cave_brownsmall_width, texel_y, _1_cave_brownsmall_width)];
+					unsigned int _lower_color_2 = _1_cave_brownsmall_pixels[Coordinates(texel_x + _1_cave_brownsmall_width + 1, texel_y, _1_cave_brownsmall_width)];
+
+					_lower_blend = ColorBlend(_lower_color_1, _lower_color_2, x_ratio);
+				}
+
+				unsigned int _blended_color = ColorBlend(_upper_blend, _lower_blend, y_ratio);
+
+				//unsigned int _3_color = _3_Human_TGA_pixels[Coordinates(x, y, RASTER_HEIGHT)];
+
+				//float _1_Blue_Ratio = ((_1_color & 0xFF000000) >> 24) / 255.0f;
+				//float _3_Blue_Ratio = ((_3_color & 0xFF000000) >> 24) / 255.0f;
+
+				//if (_1_Blue_Ratio > _3_Blue_Ratio)
+				//	PlotPixel(x, y, ColorBlend(0x00000000, 0xFFE14A56, _3_Blue_Ratio));
+				//else
+				//	PlotPixel(x, y, ColorBlend(0x00000000, 0xFF7A09EE, _1_Blue_Ratio));
+
+				unsigned int _ul_color = 0.0f;
+				PlotPixel(x, y, ColorShift(_blended_color));
 			}
 	}
 

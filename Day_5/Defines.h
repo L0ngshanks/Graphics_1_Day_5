@@ -7,8 +7,8 @@
 #include <time.h>
 
 
-#define RASTER_WIDTH 256
-#define RASTER_HEIGHT 256
+#define RASTER_WIDTH 464
+#define RASTER_HEIGHT 576
 #define NUM_PIXELS ((RASTER_WIDTH * RASTER_HEIGHT))
 
 const int scale = 16; // 1/2^16
